@@ -1,0 +1,41 @@
+{
+  "name": "stream-sequencer",
+  "version": "0.0.0",
+  "description": "Consumes a stream of binary data and emits Buffer objects with sequence numbers to ensure proper ordering of messages. Also provides a stream which lets you reassemble the data in the correct order.",
+  "main": "index.js",
+  "scripts": {
+    "test": "istanbul cover ./node_modules/nodeunit/bin/nodeunit ./test/Sequencify.js ./test/Rearranger.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Joris-van-der-Wel/stream-sequencer.git"
+  },
+  "keywords": [
+    "buffer",
+    "engine.io",
+    "id",
+    "ordering",
+    "pipe",
+    "readable",
+    "sequence",
+    "stream",
+    "transport",
+    "transport",
+    "writable",
+    "xmlhttprequest"
+  ],
+  "author": "Joris van der Wel <joris@jorisvanderwel.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Joris-van-der-Wel/stream-sequencer/issues"
+  },
+  "homepage": "https://github.com/Joris-van-der-Wel/stream-sequencer",
+  "dependencies": {
+    "inherits": "^2.0.1"
+  },
+  "devDependencies": {
+    "concat-stream": "^1.4.7",
+    "istanbul": "^0.3.4",
+    "nodeunit": "^0.9.0"
+  }
+}
