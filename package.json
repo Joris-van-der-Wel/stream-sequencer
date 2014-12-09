@@ -1,6 +1,6 @@
 {
   "name": "stream-sequencer",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Consumes a stream of binary data and emits Buffer objects with sequence numbers to ensure proper ordering of messages. Also provides a stream which lets you reassemble the data in the correct order.",
   "main": "index.js",
   "scripts": {
