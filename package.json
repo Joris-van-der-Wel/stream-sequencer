@@ -4,7 +4,7 @@
   "description": "Consumes a stream of binary data and emits Buffer objects with sequence numbers to ensure proper ordering of messages. Also provides a stream which lets you reassemble the data in the correct order.",
   "main": "index.js",
   "scripts": {
-    "test": "istanbul cover ./node_modules/nodeunit/bin/nodeunit ./test/Sequencify.js ./test/Rearranger.js"
+    "test": "istanbul cover ./node_modules/nodeunit/bin/nodeunit ./test/Sequencify.js ./test/Rearranger.js ./test/DuplexSequencer.js"
   },
   "repository": {
     "type": "git",
@@ -34,6 +34,7 @@
   },
   "homepage": "https://github.com/Joris-van-der-Wel/stream-sequencer",
   "dependencies": {
+    "bun": "0.0.11",
     "inherits": "^2.0.1"
   },
   "devDependencies": {
