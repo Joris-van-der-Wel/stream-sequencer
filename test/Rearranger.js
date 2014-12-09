@@ -110,4 +110,93 @@ module.exports = {
                 stream.write(new Buffer('ffffffff'+'0a0b0c0d0e0f10111213', 'hex')); // 1
                 stream.end();
         },
+        'object mode': function(test)
+        {
+                var stream = new Rearranger({objectMode: true});
+
+                stream.on('error', function(err)
+                {
+                        test.ok(false, 'error ' + err);
+                });
+
+                var count = 0;
+
+                stream.on('data', function(obj)
+                {
+                        ++count;
+
+                        if (count === 1)
+                        {
+                                test.deepEqual(obj, {foo: 'bar'});
+                        }
+                        else if (count === 2)
+                        {
+                                test.deepEqual(obj, ['a', 'b']);
+                        }
+                        else if (count === 3)
+                        {
+                                // special case
+                                // This lets you use strings without having to use json in objectMode
+                                test.strictEqual(obj, 'some string');
+                        }
+                        else if (count === 4)
+                        {
+                                // buffers should stay buffers
+                                test.ok(Buffer.isBuffer(obj));
+                                test.strictEqual(obj.toString('hex'), '00010203040506070809');
+                        }
+                        else if (count === 5)
+                        {
+                                test.strictEqual(obj, false);
+                        }
+                        else if (count === 6)
+                        {
+                                test.strictEqual(obj, 12345);
+                        }
+                        else
+                        {
+                                test.ok(false);
+                        }
+                });
+
+                stream.on('end', function()
+                {
+                        test.strictEqual(count, 6);
+                        test.strictEqual(stream.lastSequenceID, 5);
+                        test.done();
+                });
+
+                stream.write([0, {foo: 'bar'}]); // 0
+                stream.write(new Buffer('00000003' + '00010203040506070809', 'hex')); // 3
+                stream.write([1, ['a', 'b']]); // 1
+                stream.write('00000002' + 'some string'); // 2
+                stream.write([5, 12345]); // 5
+                stream.write([4, false]); // 4
+
+                stream.end();
+        },
+        'invalid object': function(test)
+        {
+                var stream = new Rearranger({objectMode: true});
+
+                var concatStream = concat(function(result)
+                {
+                        test.ok(result === 'foo');
+                        test.done();
+                });
+
+                var count = 0;
+                stream.on('invalid-object', function(err)
+                {
+                        ++count;
+                        test.ok(count === 1 || count === 2, 'invalid-object should occur twice');
+                });
+
+                stream.pipe(concatStream);
+
+                stream.write({foo: 'bar'});
+                stream.write([500, 'baz', 'another thing']); // invalid too
+                stream.write('00000000' + 'foo'); // 0
+                stream.end();
+        }
 };

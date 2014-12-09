@@ -181,5 +181,63 @@ module.exports = {
                 stream.write(new Buffer('1415161718191a1b1c1d', 'hex'));
                 stream.write(new Buffer('1e1f', 'hex'));
                 stream.end();
+        },
+        'object mode': function(test)
+        {
+                var stream = new Sequencify({objectMode: true});
+                var count = 0;
+
+                stream.on('data', function(obj)
+                {
+                        ++count;
+
+                        if (count === 1)
+                        {
+                                test.deepEqual(obj, [0, {foo: 'bar'}]);
+                        }
+                        else if (count === 2)
+                        {
+                                test.deepEqual(obj, [1, ['a', 'b']]);
+                        }
+                        else if (count === 3)
+                        {
+                                // special case
+                                // This lets you use strings without having to use json in objectMode
+                                test.strictEqual(obj, '00000002' + 'some string');
+                        }
+                        else if (count === 4)
+                        {
+                                // buffers should stay buffers
+                                test.ok(Buffer.isBuffer(obj));
+                                test.strictEqual(obj.toString('hex'), '00000003' + '00010203040506070809');
+                        }
+                        else if (count === 5)
+                        {
+                                test.deepEqual(obj, [4, false]);
+                        }
+                        else if (count === 6)
+                        {
+                                test.deepEqual(obj, [5, 12345]);
+                        }
+                        else
+                        {
+                                test.ok(false);
+                        }
+                });
+
+                stream.on('end', function()
+                {
+                        test.strictEqual(count, 6);
+                        test.strictEqual(stream.lastSequenceID, 5);
+                        test.done();
+                });
+
+                stream.write({foo: 'bar'});
+                stream.write(['a', 'b']);
+                stream.write('some string');
+                stream.write(new Buffer('00010203040506070809', 'hex'));
+                stream.write(false);
+                stream.write(12345);
+                stream.end();
         }
 };
