@@ -60,5 +60,31 @@ stream.on('data', function(chunk)
 });
 ```
 
+### Object Mode
+If you enable objectMode, you can pass any kind of object, which will be wrapped in an array. This is useful if you interact with a library which automatically performs serialization (json, ejson, etc).
+Strings and Buffers will have the sequence number prepended to their data, just like when not in objectMode.
+
+```javascript
+var Sequencify = require('stream-sequencer').Sequencify;
+var stream = new Sequencify({objectMode: true});
+stream.pipe(destinationStream);
+stream.write({foo: 'bar'});
+stream.write(['a', 'b', 'c']);
+stream.write(132456);
+stream.write('hello');
+stream.write(new Buffer('BABE', 'hex'));
+stream.end();
+
+// `destinationStream` will receive (in object mode):
+// [0, {foo: 'bar'} ]
+// [1, ['a', 'b', 'c'] ]
+// [2, 123456 ]
+// '00000003hello'
+// Buffer('00000004BABE', 'hex')
+// You will also need to enable objectMode in the Rearranger
+```
+
+---------------------------------------
+
 This module was originally intended for usage with primus & engine.io to make sure the XMLHTTPRequest fallback does not mess up my data.
 Note that if you would like to use this with something like UDP, you will also need to implement retransmissions.
