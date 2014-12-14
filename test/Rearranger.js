@@ -31,10 +31,10 @@ module.exports = {
 
                 stream.pipe(concatStream);
 
-                stream.write(new Buffer('00000002'+'1415161718191a1b1c1d', 'hex')); // 2
-                stream.write(new Buffer('00000003'+'1e1f', 'hex')); // 3
-                stream.write(new Buffer('00000000'+'00010203040506070809', 'hex')); // 0
-                stream.write(new Buffer('00000001'+'0a0b0c0d0e0f10111213', 'hex')); // 1
+                stream.write(new Buffer('babebabe' + '00000002'+'1415161718191a1b1c1d', 'hex')); // 2
+                stream.write(new Buffer('babebabe' + '00000003'+'1e1f', 'hex')); // 3
+                stream.write(new Buffer('babebabe' + '00000000'+'00010203040506070809', 'hex')); // 0
+                stream.write(new Buffer('babebabe' + '00000001'+'0a0b0c0d0e0f10111213', 'hex')); // 1
                 stream.end();
         },
         'text': function(test)
@@ -55,9 +55,9 @@ module.exports = {
 
                 stream.pipe(concatStream);
 
-                stream.write('00000001' + 'qwertyuiop', 'utf8'); // 1
-                stream.write('00000000' + 'foo bar def abc', 'utf8'); // 0
-                stream.write('00000002' + 'Fusce gravida dictum iaculis. Integer sit amet felis quam. Praesent tempor dolor et metus pharetra, et condimentum ex maximus', 'utf8'); // 2
+                stream.write('babebabe' + '00000001' + 'qwertyuiop', 'utf8'); // 1
+                stream.write('babebabe' + '00000000' + 'foo bar def abc', 'utf8'); // 0
+                stream.write('babebabe' + '00000002' + 'Fusce gravida dictum iaculis. Integer sit amet felis quam. Praesent tempor dolor et metus pharetra, et condimentum ex maximus', 'utf8'); // 2
 
                 stream.end();
         },
@@ -80,10 +80,10 @@ module.exports = {
 
                 stream.pipe(concatStream);
 
-                stream.write(new Buffer('00000003'+'1e1f', 'hex')); // 3
-                stream.write(new Buffer('00000002'+'1415161718191a1b1c1d', 'hex')); // 2
-                stream.write(new Buffer('00000001'+'0a0b0c0d0e0f10111213', 'hex')); // 1
-                stream.write(new Buffer('00000000'+'00010203040506070809', 'hex')); // 0
+                stream.write(new Buffer('babebabe' + '00000003'+'1e1f', 'hex')); // 3
+                stream.write(new Buffer('babebabe' + '00000002'+'1415161718191a1b1c1d', 'hex')); // 2
+                stream.write(new Buffer('babebabe' + '00000001'+'0a0b0c0d0e0f10111213', 'hex')); // 1
+                stream.write(new Buffer('babebabe' + '00000000'+'00010203040506070809', 'hex')); // 0
                 stream.end();
         },
         'wrapping': function(test)
@@ -104,10 +104,10 @@ module.exports = {
 
                 stream.pipe(concatStream);
 
-                stream.write(new Buffer('00000000'+'1415161718191a1b1c1d', 'hex')); // 2
-                stream.write(new Buffer('00000001'+'1e1f', 'hex')); // 3
-                stream.write(new Buffer('fffffffe'+'00010203040506070809', 'hex')); // 0
-                stream.write(new Buffer('ffffffff'+'0a0b0c0d0e0f10111213', 'hex')); // 1
+                stream.write(new Buffer('babebabe' + '00000000'+'1415161718191a1b1c1d', 'hex')); // 2
+                stream.write(new Buffer('babebabe' + '00000001'+'1e1f', 'hex')); // 3
+                stream.write(new Buffer('babebabe' + 'fffffffe'+'00010203040506070809', 'hex')); // 0
+                stream.write(new Buffer('babebabe' + 'ffffffff'+'0a0b0c0d0e0f10111213', 'hex')); // 1
                 stream.end();
         },
         'object mode': function(test)
@@ -166,12 +166,12 @@ module.exports = {
                         test.done();
                 });
 
-                stream.write([0, {foo: 'bar'}]); // 0
-                stream.write(new Buffer('00000003' + '00010203040506070809', 'hex')); // 3
-                stream.write([1, ['a', 'b']]); // 1
-                stream.write('00000002' + 'some string'); // 2
-                stream.write([5, 12345]); // 5
-                stream.write([4, false]); // 4
+                stream.write([0xbabebabe, 0, {foo: 'bar'}]); // 0
+                stream.write(new Buffer('babebabe' + '00000003' + '00010203040506070809', 'hex')); // 3
+                stream.write([0xbabebabe, 1, ['a', 'b']]); // 1
+                stream.write('babebabe' + '00000002' + 'some string'); // 2
+                stream.write([0xbabebabe, 5, 12345]); // 5
+                stream.write([0xbabebabe, 4, false]); // 4
 
                 stream.end();
         },
@@ -195,8 +195,55 @@ module.exports = {
                 stream.pipe(concatStream);
 
                 stream.write({foo: 'bar'});
-                stream.write([500, 'baz', 'another thing']); // invalid too
-                stream.write('00000000' + 'foo'); // 0
+                stream.write([0xbabebae, 500, 'baz', 'another thing']); // invalid too
+                stream.write('babebabe' + '00000000' + 'foo'); // 0
+                stream.end();
+        },
+        'instanceID default': function(test)
+        {
+                var stream = new Rearranger();
+                test.strictEqual(stream.instanceID, 0xbabebabe); // default
+                test.done();
+        },
+        'wrong instance ID': function(test)
+        {
+                var stream = new Rearranger({objectMode: true, instanceID: 1234});
+                test.strictEqual(stream.instanceID, 1234);
+
+                stream.on('error', function(err)
+                {
+                        test.ok(false, 'error ' + err);
+                });
+
+                var count = 0;
+
+                stream.on('data', function(obj)
+                {
+                        ++count;
+
+                        if (count === 1)
+                        {
+                                test.deepEqual(obj, 'foo');
+                        }
+                        else
+                        {
+                                test.ok(false);
+                        }
+                });
+
+                stream.on('end', function()
+                {
+                        test.strictEqual(count, 1);
+                        test.strictEqual(stream.lastSequenceID, 0);
+                        test.strictEqual(stream.instanceID, 1234);
+                        test.done();
+                });
+
+                stream.write([0xbabebabe, 0, {foo: 'bar'}]); // wrong instance
+                stream.write(new Buffer('babebabe' + '00000000' + '00010203040506070809', 'hex')); // wrong instance
+                stream.write('babebabe' + '00000000' + 'some string'); // wrong instance
+                stream.write([1234, 0, 'foo']); // correct instance
+
                 stream.end();
         }
 };

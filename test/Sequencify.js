@@ -22,19 +22,19 @@ module.exports = {
 
                         if (count === 1)
                         {
-                                test.strictEqual(buf.toString('hex'), '00000000' + '00010203040506070809');
+                                test.strictEqual(buf.toString('hex'), 'babebabe' + '00000000' + '00010203040506070809');
                         }
                         else if (count === 2)
                         {
-                                test.strictEqual(buf.toString('hex'), '00000001' + '0a0b0c0d0e0f10111213');
+                                test.strictEqual(buf.toString('hex'), 'babebabe' + '00000001' + '0a0b0c0d0e0f10111213');
                         }
                         else if (count === 3)
                         {
-                                test.strictEqual(buf.toString('hex'), '00000002' + '1415161718191a1b1c1d');
+                                test.strictEqual(buf.toString('hex'), 'babebabe' + '00000002' + '1415161718191a1b1c1d');
                         }
                         else if (count === 4)
                         {
-                                test.strictEqual(buf.toString('hex'), '00000003' + '1e1f');
+                                test.strictEqual(buf.toString('hex'), 'babebabe' + '00000003' + '1e1f');
                         }
                         else
                         {
@@ -66,15 +66,15 @@ module.exports = {
 
                         if (count === 1)
                         {
-                                test.strictEqual(str, '00000000' + 'foo bar def abc');
+                                test.strictEqual(str, 'babebabe' +'00000000' + 'foo bar def abc');
                         }
                         else if (count === 2)
                         {
-                                test.strictEqual(str, '00000001' + 'qwertyuiop');
+                                test.strictEqual(str, 'babebabe' +'00000001' + 'qwertyuiop');
                         }
                         else if (count === 3)
                         {
-                                test.strictEqual(str, '00000002' + 'Fusce gravida dictum iaculis. Integer sit amet felis quam. Praesent tempor dolor et metus pharetra, et condimentum ex maximus');
+                                test.strictEqual(str, 'babebabe' +'00000002' + 'Fusce gravida dictum iaculis. Integer sit amet felis quam. Praesent tempor dolor et metus pharetra, et condimentum ex maximus');
                         }
                         else
                         {
@@ -105,19 +105,19 @@ module.exports = {
 
                         if (count === 1)
                         {
-                                test.strictEqual(buf.toString('hex'), '00012345' + '00010203040506070809');
+                                test.strictEqual(buf.toString('hex'), 'babebabe' +'00012345' + '00010203040506070809');
                         }
                         else if (count === 2)
                         {
-                                test.strictEqual(buf.toString('hex'), '00012346' + '0a0b0c0d0e0f10111213');
+                                test.strictEqual(buf.toString('hex'), 'babebabe' +'00012346' + '0a0b0c0d0e0f10111213');
                         }
                         else if (count === 3)
                         {
-                                test.strictEqual(buf.toString('hex'), '00012347' + '1415161718191a1b1c1d');
+                                test.strictEqual(buf.toString('hex'), 'babebabe' +'00012347' + '1415161718191a1b1c1d');
                         }
                         else if (count === 4)
                         {
-                                test.strictEqual(buf.toString('hex'), '00012348' + '1e1f');
+                                test.strictEqual(buf.toString('hex'), 'babebabe' +'00012348' + '1e1f');
                         }
                         else
                         {
@@ -149,19 +149,19 @@ module.exports = {
 
                         if (count === 1)
                         {
-                                test.strictEqual(buf.toString('hex'), 'fffffffe' + '00010203040506070809');
+                                test.strictEqual(buf.toString('hex'), 'babebabe' +'fffffffe' + '00010203040506070809');
                         }
                         else if (count === 2)
                         {
-                                test.strictEqual(buf.toString('hex'), 'ffffffff' + '0a0b0c0d0e0f10111213');
+                                test.strictEqual(buf.toString('hex'), 'babebabe' +'ffffffff' + '0a0b0c0d0e0f10111213');
                         }
                         else if (count === 3)
                         {
-                                test.strictEqual(buf.toString('hex'), '00000000' + '1415161718191a1b1c1d');
+                                test.strictEqual(buf.toString('hex'), 'babebabe' +'00000000' + '1415161718191a1b1c1d');
                         }
                         else if (count === 4)
                         {
-                                test.strictEqual(buf.toString('hex'), '00000001' + '1e1f');
+                                test.strictEqual(buf.toString('hex'), 'babebabe' +'00000001' + '1e1f');
                         }
                         else
                         {
@@ -193,31 +193,31 @@ module.exports = {
 
                         if (count === 1)
                         {
-                                test.deepEqual(obj, [0, {foo: 'bar'}]);
+                                test.deepEqual(obj, [0xbabebabe, 0, {foo: 'bar'}]);
                         }
                         else if (count === 2)
                         {
-                                test.deepEqual(obj, [1, ['a', 'b']]);
+                                test.deepEqual(obj, [0xbabebabe, 1, ['a', 'b']]);
                         }
                         else if (count === 3)
                         {
                                 // special case
                                 // This lets you use strings without having to use json in objectMode
-                                test.strictEqual(obj, '00000002' + 'some string');
+                                test.strictEqual(obj, 'babebabe' + '00000002' + 'some string');
                         }
                         else if (count === 4)
                         {
                                 // buffers should stay buffers
                                 test.ok(Buffer.isBuffer(obj));
-                                test.strictEqual(obj.toString('hex'), '00000003' + '00010203040506070809');
+                                test.strictEqual(obj.toString('hex'), 'babebabe' + '00000003' + '00010203040506070809');
                         }
                         else if (count === 5)
                         {
-                                test.deepEqual(obj, [4, false]);
+                                test.deepEqual(obj, [0xbabebabe, 4, false]);
                         }
                         else if (count === 6)
                         {
-                                test.deepEqual(obj, [5, 12345]);
+                                test.deepEqual(obj, [0xbabebabe, 5, 12345]);
                         }
                         else
                         {
@@ -238,6 +238,42 @@ module.exports = {
                 stream.write(new Buffer('00010203040506070809', 'hex'));
                 stream.write(false);
                 stream.write(12345);
+                stream.end();
+        },
+        'instanceID default': function(test)
+        {
+                var stream = new Sequencify();
+                test.strictEqual(stream.instanceID, 0xbabebabe); // default
+                test.done();
+        },
+        'instanceID': function(test)
+        {
+                var stream = new Sequencify({instanceID: 0x1234});
+                test.strictEqual(stream.instanceID, 0x1234); // default
+                var count = 0;
+
+                stream.on('data', function(buf)
+                {
+                        ++count;
+
+                        if (count === 1)
+                        {
+                                test.strictEqual(buf.toString('hex'), '00001234' + '00000000' + '00010203040506070809');
+                        }
+                        else
+                        {
+                                test.ok(false);
+                        }
+                });
+
+                stream.on('end', function()
+                {
+                        test.strictEqual(count, 1);
+                        test.strictEqual(stream.lastSequenceID, 0);
+                        test.done();
+                });
+
+                stream.write(new Buffer('00010203040506070809', 'hex'));
                 stream.end();
         }
 };
