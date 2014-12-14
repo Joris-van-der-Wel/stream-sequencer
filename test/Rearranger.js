@@ -67,7 +67,8 @@ module.exports = {
 
                 var concatStream = concat(function(result)
                 {
-                        test.ok(false);
+                        test.ok(!result.length);
+                        test.done();
                 });
 
                 var count = 0;
@@ -75,7 +76,6 @@ module.exports = {
                 {
                         ++count;
                         test.strictEqual(count, 1, 'error should occur once');
-                        test.done();
                 });
 
                 stream.pipe(concatStream);
