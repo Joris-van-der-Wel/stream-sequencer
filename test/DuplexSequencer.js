@@ -146,5 +146,33 @@ module.exports = {
                 stream.write(false);
                 stream.write(12345);
                 stream.end();
+        },
+        'setMaxListeners()': function(test)
+        {
+                var parentStream = new PassThrough();
+                parentStream.setMaxListeners(123);
+                var stream = new DuplexSequencer(parentStream);
+
+                stream.setMaxListeners(22);
+
+                test.strictEqual(parentStream._maxListeners, 123);
+                test.strictEqual(stream._maxListeners, 22);
+                test.strictEqual(stream.rearranger._maxListeners, 22);
+                test.strictEqual(stream.sequencify._maxListeners, 22);
+
+                test.done();
+        },
+        'maxListeners option': function(test)
+        {
+                var parentStream = new PassThrough();
+                parentStream.setMaxListeners(123);
+                var stream = new DuplexSequencer(parentStream, {maxListeners: 40});
+
+                test.strictEqual(parentStream._maxListeners, 123);
+                test.strictEqual(stream._maxListeners, 40);
+                test.strictEqual(stream.rearranger._maxListeners, 40);
+                test.strictEqual(stream.sequencify._maxListeners, 40);
+
+                test.done();
         }
 };
