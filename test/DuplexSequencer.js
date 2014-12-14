@@ -19,6 +19,13 @@ module.exports = {
                 test.throws(function(){ new DuplexSequencer(); }, Error);
                 test.done();
         },
+        'parentStream': function(test)
+        {
+                var parentStream = new PassThrough();
+                var stream = new DuplexSequencer(parentStream);
+                test.ok(stream.parentStream === parentStream);
+                test.done();
+        },
         'binary': function(test)
         {
                 var stream = new DuplexSequencer(new PassThrough());
