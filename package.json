@@ -34,7 +34,7 @@
   },
   "homepage": "https://github.com/Joris-van-der-Wel/stream-sequencer",
   "dependencies": {
-    "bun": "0.0.11",
+    "bun": "1.1.30",
     "inherits": "^2.0.1"
   },
   "devDependencies": {
